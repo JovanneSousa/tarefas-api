@@ -1,6 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using tarefas_api.Context;
+using tarefas_api.Repositories;
+using tarefas_api.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<TarefaContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddScoped<ITarefaService, TarefaService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
