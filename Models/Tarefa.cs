@@ -8,6 +8,6 @@ public class Tarefa
     public string Titulo { get; set; }
     public string Descricao { get; set; }
     public DateTime Data { get; set; }
-
     public StatusTarefa Status { get; set; }
+    public PrioridadeTarefa Prioridade { get; set; }
 }

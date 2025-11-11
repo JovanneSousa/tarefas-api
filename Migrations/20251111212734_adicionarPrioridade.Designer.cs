@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using tarefas_api.Context;
 
@@ -11,9 +12,11 @@ using tarefas_api.Context;
 namespace tarefas_api.Migrations
 {
     [DbContext(typeof(TarefaContext))]
-    partial class TarefaContextModelSnapshot : ModelSnapshot
+    [Migration("20251111212734_adicionarPrioridade")]
+    partial class adicionarPrioridade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
