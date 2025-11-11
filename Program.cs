@@ -11,8 +11,20 @@ builder.Services.AddDbContext<TarefaContext>(options =>
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirMeuSite", policy =>
+    {
+        policy.AllowAnyOrigin()
+                      .AllowAnyHeader();
+    });
+});
+
+
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -24,6 +36,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("PermitirMeuSite");
 
 app.UseHttpsRedirection();
 
