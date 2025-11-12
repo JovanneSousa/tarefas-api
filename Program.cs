@@ -6,7 +6,7 @@ using tarefas_api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-var webapp = Environment.GetEnvironmentVariable("MEU_APP");
+//var webapp = Environment.GetEnvironmentVariable("MEU_APP");
 
 // Add services to the container.
 builder.Services.AddDbContext<TarefaContext>(options =>
@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirMeuSite", policy =>
     {
-        policy.WithOrigins(webapp)
+        policy.AllowAnyOrigin()
                 .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
