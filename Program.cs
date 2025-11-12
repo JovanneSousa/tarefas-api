@@ -11,6 +11,7 @@ var webapp = Environment.GetEnvironmentVariable("MEU_APP");
 // Add services to the container.
 builder.Services.AddDbContext<TarefaContext>(options =>
     options.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 
