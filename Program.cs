@@ -21,8 +21,6 @@ builder.Services.AddCors(options =>
     options.AddPolicy("PermitirMeuSite", policy =>
     {
         policy.AllowAnyOrigin()
-                .AllowCredentials()
-                .AllowAnyMethod()
                 .AllowAnyHeader();
     });
 });
