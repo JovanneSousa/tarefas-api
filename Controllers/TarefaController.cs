@@ -30,6 +30,8 @@ public class TarefaController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody] Tarefa tarefa)
     {
+        if (!ModelState.IsValid) return BadRequest(tarefa);
+
         var nova = _service.Create(tarefa);
         return CreatedAtAction(nameof(GetById), new { id = nova.Id }, nova);
     }
@@ -37,18 +39,26 @@ public class TarefaController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Update(int id, [FromBody] Tarefa tarefa)
     {
-        var atualizada = _service.Update(id, tarefa);
-        if (atualizada == null)
+        if (!ModelState.IsValid || id != tarefa.Id) return BadRequest(tarefa);
+
+        var tarefaExistente = _service.GetById(id);
+        if (tarefaExistente == null)
             return NotFound(new { mensagem = "Tarefa não encontrada" });
-        return Ok(atualizada);
+        
+        _service.Update(id, tarefa);
+        return Ok(tarefa);
     }
 
-    [HttpDelete("{id}")]
+    [HttpPost("excluir/{id}")]
     public IActionResult Delete(int id)
     {
-        var removida = _service.Delete(id);
-        if (!removida)
+        if (!ModelState.IsValid) return BadRequest();
+
+        var tarefaExistente = _service.GetById(id);
+        if (tarefaExistente == null)
             return NotFound(new { mensagem = "Tarefa não encontrada" });
+
+        _service.Delete(id);
         return NoContent();
     }
 
