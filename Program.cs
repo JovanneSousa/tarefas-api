@@ -10,7 +10,7 @@ var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
 
 // Add services to the container.
 builder.Services.AddDbContext<TarefaContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(connectionString)));
+    options.UseNpgsql(connectionString));
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 
