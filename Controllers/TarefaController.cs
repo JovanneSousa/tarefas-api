@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using tarefas_api.Enums;
 using tarefas_api.Models;
 using tarefas_api.Services;
 
@@ -34,6 +35,23 @@ public class TarefaController : ControllerBase
 
         var nova = _service.Create(tarefa);
         return CreatedAtAction(nameof(GetById), new { id = nova.Id }, nova);
+    }
+
+    [HttpPost("atualiza-status/{id:int}")]
+    public IActionResult UpdateStatus(int id, [FromBody] StatusTarefa status)
+    {
+        if(!ModelState .IsValid) return BadRequest(status);
+
+        var tarefa = _service.GetById(id);
+        if (tarefa == null) return NotFound("Tarefa não encontrada");
+
+        tarefa.Status = status == 0 ?
+            StatusTarefa.Pendente :
+            StatusTarefa.Concluida;
+
+        _service.Update(id, tarefa);
+
+        return Ok(tarefa);
     }
 
     [HttpPut("{id}")]
