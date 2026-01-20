@@ -16,4 +16,4 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "auth.dll"]
+ENTRYPOINT ["dotnet", "tarefas-api.dll"]
