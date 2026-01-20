@@ -5,9 +5,13 @@ using tarefas_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+var webapp = Environment.GetEnvironmentVariable("MEU_APP");
+
 // Add services to the container.
 builder.Services.AddDbContext<TarefaContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 
@@ -17,8 +21,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirMeuSite", policy =>
     {
-        policy.AllowAnyOrigin()
-                      .AllowAnyHeader();
+        policy.WithOrigins(webapp)
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .AllowAnyHeader();
     });
 });
 

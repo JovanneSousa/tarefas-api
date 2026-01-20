@@ -46,7 +46,7 @@ public class TarefaService : ITarefaService
 
         existente.Titulo = tarefa.Titulo;
         existente.Descricao = tarefa.Descricao;
-        existente.Data = DateTime.Now;
+        existente.Data = DateTime.UtcNow;
         existente.Status = tarefa.Status;
         _repository.Update(existente);
         _repository.SaveChanges();
