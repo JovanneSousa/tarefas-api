@@ -12,44 +12,70 @@ public class TarefaService : ITarefaService
         _repository = repository;
     }
 
-    public Tarefa Create(Tarefa tarefa)
+    public async Task<Tarefa> CreateAsync(Tarefa tarefa)
     {
-        _repository.Add(tarefa);
-        _repository.SaveChanges();
+        var success = await _repository.AddAsync(tarefa);
+        if(!success)
+        {
+            Console.WriteLine("Erro ao adicionar tarefa");
+            return null;
+        }
         return tarefa;
     }
 
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
 
-        var tarefaDb = _repository.GetById(id);
-        if (tarefaDb == null) return false;
-
-        _repository.Delete(id);
-        _repository.SaveChanges();
+        var tarefaDb = await _repository.GetByIdAsync(id);
+        if (tarefaDb == null)
+        {
+            Console.WriteLine("Tarefa não encontrada");
+            return false;
+        }
+        var success = await _repository.DeleteAsync(tarefaDb);
+        if(!success)
+        {
+            Console.WriteLine("Erro ao deletar tarefa");
+            return false;
+        }
         return true;
     }
 
-    public IEnumerable<Tarefa> GetAll() => _repository.GetAll();
+    public async Task<IEnumerable<Tarefa>> GetAllAsync() => 
+        await _repository.GetAllAsync();
 
-    public List<Tarefa> GetByData(DateTime data) => _repository.GetByData(data);
-    public Tarefa GetById(int id) => _repository.GetById(id);
+    public async Task<List<Tarefa>> GetByDataAsync(DateTime data) => 
+        await _repository.GetByDataAsync(data);
+    public async Task<Tarefa> GetByIdAsync(int id) => 
+        await _repository.GetByIdAsync(id);
 
-    public List<Tarefa> GetByStatus(string status) => _repository.GetByStatus(status);
+    public async Task<List<Tarefa>> GetByStatusAsync(string status) => 
+        await _repository.GetByStatusAsync(status);
 
-    public List<Tarefa> GetByTitulo(string titulo) => _repository.GetByTitulo(titulo);
+    public async Task<List<Tarefa>> GetByTituloAsync(string titulo) => 
+        await _repository.GetByTituloAsync(titulo);
 
-    public Tarefa Update(int id, Tarefa tarefa)
+    public async Task<Tarefa> UpdateAsync(int id, Tarefa tarefa)
     {
-        var existente = _repository.GetById(id);
-        if (existente == null) return null;
+        var existente = await _repository.GetByIdAsync(id);
+        if (existente == null)
+        {
+            Console.WriteLine("Tarefa não existe");
+            return null;
+        }
 
         existente.Titulo = tarefa.Titulo;
         existente.Descricao = tarefa.Descricao;
         existente.Data = DateTime.UtcNow;
         existente.Status = tarefa.Status;
-        _repository.Update(existente);
-        _repository.SaveChanges();
+
+        var resultado = await _repository.UpdateAsync(existente);
+
+        if(!resultado)
+        {
+            Console.WriteLine("Erro ao atualizar a tarefa");
+            return null;
+        }
 
         return existente;
 
