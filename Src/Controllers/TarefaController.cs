@@ -18,93 +18,63 @@ public class TarefaController : MainController
     }
 
     [HttpGet("ObterTodos")]
-    public IActionResult GetAll() => Ok(_service.GetAll());
+    public async Task<IActionResult> GetAll() =>
+        Ok(await _service.GetAllAsync());
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
-    {
-        var tarefa = _service.GetById(id);
-        if (tarefa == null)
-            return NotFound(new { mensagem = "Tarefa não encontrada" });
-        return Ok(tarefa);
-    }
+    public async Task<IActionResult> GetById(int id)
+        => Ok(await _service.GetByIdAsync(id));
 
     [HttpPost]
-    public IActionResult Create([FromBody] Tarefa tarefa)
-    {
-        if (!ModelState.IsValid) return BadRequest(tarefa);
-
-        var nova = _service.Create(tarefa);
-        return CreatedAtAction(nameof(GetById), new { id = nova.Id }, nova);
-    }
+    public async Task<IActionResult> Create([FromBody] Tarefa tarefa) =>
+        CreatedAtAction(
+            nameof(GetById), new {id = tarefa.Id}, await _service.CreateAsync(tarefa)
+            );
 
     [HttpPost("atualiza-status/{id:int}")]
-    public IActionResult UpdateStatus(int id, [FromBody] StatusTarefa status)
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusTarefa status)
     {
         if(!ModelState .IsValid) return BadRequest(status);
 
-        var tarefa = _service.GetById(id);
+        var tarefa = await _service.GetByIdAsync(id);
         if (tarefa == null) return NotFound("Tarefa não encontrada");
 
         tarefa.Status = status == 0 ?
             StatusTarefa.Pendente :
             StatusTarefa.Concluida;
 
-        _service.Update(id, tarefa);
-
-        return Ok(tarefa);
+        return Ok(await _service.UpdateAsync(id, tarefa));
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Tarefa tarefa)
+    public async Task<IActionResult> Update(int id, [FromBody] Tarefa tarefa)
     {
         if (!ModelState.IsValid || id != tarefa.Id) return BadRequest(tarefa);
 
-        var tarefaExistente = _service.GetById(id);
+        var tarefaExistente = await _service.GetByIdAsync(id);
         if (tarefaExistente == null)
             return NotFound(new { mensagem = "Tarefa não encontrada" });
-        
-        _service.Update(id, tarefa);
-        return Ok(tarefa);
+        return Ok(await _service.UpdateAsync(id, tarefa));
     }
 
     [HttpPost("excluir/{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         if (!ModelState.IsValid) return BadRequest();
 
-        var tarefaExistente = _service.GetById(id);
-        if (tarefaExistente == null)
-            return NotFound(new { mensagem = "Tarefa não encontrada" });
-
-        _service.Delete(id);
+        await _service.DeleteAsync(id);
         return NoContent();
     }
 
     [HttpGet("BuscarPorStatus")]
-    public IActionResult GetByStatus(string status)
-    {
-        var tarefas = _service.GetByStatus(status);
-        if (tarefas == null || !tarefas.Any())
-            return NotFound(new { mensagem = "Nenhuma tarefa encontrada com o status fornecido" });
-        return Ok(tarefas);
-    }
+    public async Task<IActionResult> GetByStatus(string status) =>
+        Ok(await _service.GetByStatusAsync(status));
 
     [HttpGet("BuscarPorData")]
-    public IActionResult GetByData(DateTime data)
-    {
-        var tarefas = _service.GetByData(data);
-        if (tarefas == null || !tarefas.Any())
-            return NotFound(new { mensagem = "Nenhuma tarefa encontrada na data fornecida" });
-        return Ok(tarefas);
-    }
+    public async Task<IActionResult> GetByData(DateTime data) =>
+        Ok(await _service.GetByDataAsync(data));
 
     [HttpGet("BuscarPorTitulo")]
-    public IActionResult GetByTitulo(string titulo)
-    {
-        var tarefas = _service.GetByTitulo(titulo);
-        if (tarefas == null || !tarefas.Any())
-            return NotFound(new { mensagem = "Nenhuma tarefa encontrada com o título fornecido" });
-        return Ok(tarefas);
-    }
+    public async Task<IActionResult> GetByTitulo(string titulo) =>
+        Ok(await _service.GetByTituloAsync(titulo));
 }
