@@ -1,5 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using tarefas_api.Enums;
+﻿using tarefas_api.Enums;
 using tarefas_api.Models;
 using tarefas_api.Repositories;
 
