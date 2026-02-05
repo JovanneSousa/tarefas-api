@@ -9,8 +9,8 @@ var connectionString = builder.Configuration.GetSection("DB_CONNECTION").Get<str
 if(string.IsNullOrEmpty(connectionString))
     throw new Exception("ConnectionString não configurada");
 
-var webapp = builder.Configuration.GetSection("MEU_APP").Get<string>();
-if (string.IsNullOrEmpty(webapp))
+var webapp = builder.Configuration.GetSection("MEU_APP").Get<string[]>();
+if (webapp == null || webapp.Length == 0)
     throw new Exception("WebApp não configurado!");
 
 // Add services to the container.
