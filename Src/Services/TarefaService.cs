@@ -1,4 +1,6 @@
-﻿using tarefas_api.Models;
+﻿using System.Net.NetworkInformation;
+using tarefas_api.Enums;
+using tarefas_api.Models;
 using tarefas_api.Repositories;
 
 namespace tarefas_api.Services;
@@ -46,8 +48,17 @@ public class TarefaService : ITarefaService
 
     public async Task<List<Tarefa>> GetByDataAsync(DateTime data) => 
         await _repository.GetByDataAsync(data);
-    public async Task<Tarefa> GetByIdAsync(int id) => 
-        await _repository.GetByIdAsync(id);
+
+    public async Task<Tarefa> GetByIdAsync(int id)
+    {
+        var tarefa = await _repository.GetByIdAsync(id);
+        if(tarefa == null)
+        {
+            Console.WriteLine("Tarefa não encontrada!");
+            return null;
+        }
+        return tarefa;
+    }
 
     public async Task<List<Tarefa>> GetByStatusAsync(string status) => 
         await _repository.GetByStatusAsync(status);
@@ -79,5 +90,25 @@ public class TarefaService : ITarefaService
 
         return existente;
 
+    }
+
+    public async Task<Tarefa> UpdateStatusAsync(int id, StatusTarefa status)
+    {
+        var tarefa = await _repository.GetByIdAsync(id);
+        if (tarefa == null) 
+        {
+            Console.WriteLine("Tarefa não encontrada!");
+            return null;
+        }
+
+        tarefa.Status = status;
+        var success = await _repository.UpdateAsync(tarefa);
+        if(!success)
+        {
+            Console.WriteLine("Erro ao atualizar a tarefa");
+            return null;
+        }
+
+        return tarefa;
     }
 }
