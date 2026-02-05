@@ -27,37 +27,17 @@ public class TarefaController : MainController
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Tarefa tarefa) =>
-        CreatedAtAction(
-            nameof(GetById), new {id = tarefa.Id}, await _service.CreateAsync(tarefa)
-            );
+        Ok(await _service.CreateAsync(tarefa));
 
-    [HttpPost("atualiza-status/{id:int}")]
-    public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusTarefa status)
-    {
-        if(!ModelState .IsValid) return BadRequest(status);
-
-        var tarefa = await _service.GetByIdAsync(id);
-        if (tarefa == null) return NotFound("Tarefa não encontrada");
-
-        tarefa.Status = status == 0 ?
-            StatusTarefa.Pendente :
-            StatusTarefa.Concluida;
-
-        return Ok(await _service.UpdateAsync(id, tarefa));
-    }
+    [HttpPut("atualiza-status/{id:int}")]
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusTarefa status) => 
+        Ok(await _service.UpdateStatusAsync(id, status));
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] Tarefa tarefa)
-    {
-        if (!ModelState.IsValid || id != tarefa.Id) return BadRequest(tarefa);
+    public async Task<IActionResult> Update(int id, [FromBody] Tarefa tarefa) =>
+        Ok(await _service.UpdateAsync(id, tarefa));
 
-        var tarefaExistente = await _service.GetByIdAsync(id);
-        if (tarefaExistente == null)
-            return NotFound(new { mensagem = "Tarefa não encontrada" });
-        return Ok(await _service.UpdateAsync(id, tarefa));
-    }
-
-    [HttpPost("excluir/{id}")]
+    [HttpDelete("excluir/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         if (!ModelState.IsValid) return BadRequest();
