@@ -4,13 +4,12 @@ namespace tarefas_api.Repositories;
 
 public interface ITarefaRepository
 {
-    IEnumerable<Models.Tarefa> GetAll();
-    Tarefa GetById(int id);
-    List<Tarefa> GetByTitulo(string titulo);
-    List<Tarefa> GetByStatus(string status);
-    List<Tarefa> GetByData(DateTime data);
-    void Add(Tarefa tarefa);
-    void Update(Tarefa tarefa);
-    void Delete(int id);
-    void SaveChanges();
+    Task<IEnumerable<Tarefa>> GetAllAsync();
+    Task<Tarefa> GetByIdAsync(int id);
+    Task<List<Tarefa>> GetByTituloAsync(string titulo);
+    Task<List<Tarefa>> GetByStatusAsync(string status);
+    Task<List<Tarefa>> GetByDataAsync(DateTime data);
+    Task<bool> AddAsync(Tarefa tarefa);
+    Task<bool> UpdateAsync(Tarefa tarefa);
+    Task<bool> DeleteAsync(Tarefa tarefa);
 }

@@ -1,7 +1,7 @@
-﻿using tarefas_api.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using tarefas_api.Context;
 using tarefas_api.Enums;
 using tarefas_api.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace tarefas_api.Repositories;
 
@@ -14,38 +14,49 @@ public class TarefaRepository : ITarefaRepository
         _context = context;
     }
 
-    public void Add(Tarefa tarefa) => _context.Tarefas.Add(tarefa);
-
-    public void Delete(int id) => _context.Tarefas.Remove(GetById(id));
-
-    public IEnumerable<Tarefa> GetAll() => _context.Tarefas.ToList();
-
-    public List<Tarefa> GetByData(DateTime data)
+    public async Task<bool> AddAsync(Tarefa tarefa)
     {
-        return _context.Tarefas
-          .Where(t => t.Data.Date == data.Date)
-          .ToList();
+        await _context.Tarefas.AddAsync(tarefa);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
-    public Tarefa? GetById(int id) => _context.Tarefas.Find(id);
+    public async Task<bool> DeleteAsync(Tarefa tarefa) 
+    {
+        _context.Tarefas.Remove(tarefa);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
-    public List<Tarefa> GetByStatus(string status)
+    public async Task<IEnumerable<Tarefa>> GetAllAsync() =>
+        await _context.Tarefas.ToListAsync(); 
+
+    public async Task<List<Tarefa>> GetByDataAsync(DateTime data)
+        => await _context.Tarefas
+              .Where(t => t.Data.Date == data.Date)
+              .ToListAsync();
+
+    public async Task<Tarefa?> GetByIdAsync(int id) 
+        => await _context.Tarefas.FirstOrDefaultAsync(t => t.Id == id);
+
+    public async Task<List<Tarefa>> GetByStatusAsync(string status)
     {
         if (!Enum.TryParse<StatusTarefa>(status, true, out var statusEnum))
             return new List<Tarefa>();
-        return _context.Tarefas
+        return await _context.Tarefas
             .Where(t => t.Status == statusEnum)
-            .ToList();
+            .ToListAsync();
     }
 
-    public List<Tarefa> GetByTitulo(string titulo)
+    public async Task<List<Tarefa>> GetByTituloAsync(string titulo)
+        => await _context.Tarefas
+                    .Where(t => t.Titulo.ToLower() == titulo.ToLower())
+                    .ToListAsync();
+
+    public async Task<bool> UpdateAsync(Tarefa tarefa) 
     {
-        return _context.Tarefas
-                  .Where(t => t.Titulo.ToLower() == titulo.ToLower())
-                  .ToList();
+        _context.Tarefas.Update(tarefa);
+        await _context.SaveChangesAsync();
+        return true;
     }
-
-    public void SaveChanges() => _context.SaveChanges();
-
-    public void Update(Tarefa tarefa) => _context.Tarefas.Update(tarefa);
 }

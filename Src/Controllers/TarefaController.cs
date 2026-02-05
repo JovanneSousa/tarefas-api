@@ -2,12 +2,13 @@
 using tarefas_api.Enums;
 using tarefas_api.Models;
 using tarefas_api.Services;
+using tarefas_api.Src.Controllers;
 
 namespace tarefas_api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TarefaController : ControllerBase
+public class TarefaController : MainController
 {
     private readonly ITarefaService _service;
 
