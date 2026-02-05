@@ -5,8 +5,13 @@ using tarefas_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-var webapp = Environment.GetEnvironmentVariable("MEU_APP");
+var connectionString = builder.Configuration.GetSection("DB_CONNECTION").Get<string>();
+if(string.IsNullOrEmpty(connectionString))
+    throw new Exception("ConnectionString não configurada");
+
+var webapp = builder.Configuration.GetSection("MEU_APP").Get<string>();
+if (string.IsNullOrEmpty(webapp))
+    throw new Exception("WebApp não configurado!");
 
 // Add services to the container.
 builder.Services.AddDbContext<TarefaContext>(options =>
