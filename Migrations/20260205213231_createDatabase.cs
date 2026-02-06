@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace tarefas_api.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMigration : Migration
+    public partial class createDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

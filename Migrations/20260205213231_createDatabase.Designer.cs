@@ -12,15 +12,15 @@ using tarefas_api.Context;
 namespace tarefas_api.Migrations
 {
     [DbContext(typeof(TarefaContext))]
-    [Migration("20251112211031_initialMigration")]
-    partial class initialMigration
+    [Migration("20260205213231_createDatabase")]
+    partial class createDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.21")
+                .HasAnnotation("ProductVersion", "9.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
